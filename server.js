@@ -25,12 +25,10 @@ app.post('/webhook/saweria', (req, res) => {
     res.status(200).json({ message: 'Webhook received' });
 });
 // Endpoint untuk mendapatkan data donasi terbaru
-app.get('/api/donations', (req, res) => {
-    // Urutkan donasi berdasarkan waktu (terbaru pertama)
-    const sortedDonations = donations.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-    
-    // Kirim data donasi terbaru
-    res.status(200).json(sortedDonations);
+app.get('/api/donations', async (req, res) => {
+    const donations = await Donation.find().sort({ created_at: -1 }); // Ambil data terbaru
+    console.log('Data donasi dari database:', donations); // Log data dari database
+    res.status(200).json(donations);
 });
 
 // Serve static files
