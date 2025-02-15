@@ -1,0 +1,3 @@
+node_modules/
+webhook-server/donations.json
+.env
