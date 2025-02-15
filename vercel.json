@@ -1,18 +1,15 @@
 {
   "version": 2,
-  "routes": [
+  "builds": [
     {
-      "src": "/api/donations",
-      "methods": ["GET", "OPTIONS"],
-      "dest": "/api/donations.js"
-    },
-    {
-      "src": "/webhook-saweria",
-      "methods": ["POST", "OPTIONS"],
-      "dest": "/api/webhook-saweria.js"
+      "src": "server.js",
+      "use": "@vercel/node"
     }
   ],
-  "github": {
-    "silent": true
-  }
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "server.js"
+    }
+  ]
 }
