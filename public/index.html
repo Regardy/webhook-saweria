@@ -1,0 +1,81 @@
+<html>
+  <head>
+    <title>Test</title>
+  </head>
+  <body>
+    <!-- Tambahkan sebelum closing body tag -->
+<div class="donations-section">
+    <h3>🎁 Donasi Terbaru</h3>
+    <div id="donations-list" class="donations-list">
+        <p>Memuat donasi...</p>
+    </div>
+</div>
+
+<style>
+.donations-section {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.donations-list {
+    margin-top: 1rem;
+}
+
+.donation-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.donation-item .name {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.donation-item .amount {
+    color: #27ae60;
+}
+
+.donation-item .time {
+    font-size: 0.8rem;
+    color: #7f8c8d;
+}
+</style>
+
+<script>
+async function loadDonations() {
+    try {
+        const response = await fetch('/api/donations');
+        const donations = await response.json();
+        
+        const html = donations.map(d => `
+            <div class="donation-item">
+                <span class="name">${d.donator_name}</span>
+                <span class="amount">Rp${Number(d.amount).toLocaleString('id')}</span>
+                <span class="time">${new Date(d.timestamp).toLocaleString('id')}</span>
+            </div>
+        `).join('') || '<p>Belum ada donasi</p>';
+        
+        document.getElementById('donations-list').innerHTML = html;
+    } catch (err) {
+        console.error('Gagal memuat donasi:', err);
+        document.getElementById('donations-list').innerHTML = 
+            '<p>Gagal memuat data donasi</p>';
+    }
+}
+
+// Update setiap 30 detik
+setInterval(loadDonations, 30000);
+loadDonations();
+</script>
+  </body>
+</html>
