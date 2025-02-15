@@ -9,27 +9,34 @@ const port = process.env.PORT || 3000;
 // Middleware
 app.use(bodyParser.json());
 
-// Serve static files (HTML, CSS, JS)
-app.use(express.static('public'));
+// Simpan data donasi di array (sementara)
+let donations = [];
 
 // Endpoint untuk webhook Saweria
 app.post('/webhook/saweria', (req, res) => {
-    // Handle data dari webhook
     const data = req.body;
     console.log('Data dari Saweria:', data);
 
-    // Lakukan sesuatu dengan data donasi
+    // Simpan data donasi ke array
     if (data.event === 'donation') {
+        donations.push(data); // Tambahkan donasi ke array
         console.log(`Donasi diterima: ${data.amount} dari ${data.donator_name}`);
     }
 
     res.status(200).json({ message: 'Webhook received' });
 });
 
-// Route untuk halaman utama
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/public/index.html');
+// Endpoint untuk mendapatkan data donasi terbaru
+app.get('/api/donations', (req, res) => {
+    // Urutkan donasi berdasarkan waktu (terbaru pertama)
+    const sortedDonations = donations.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    
+    // Kirim data donasi terbaru
+    res.status(200).json(sortedDonations);
 });
+
+// Serve static files
+app.use(express.static('public'));
 
 // Start server
 app.listen(port, () => {
