@@ -1,5 +1,7 @@
+import { readFile } from 'fs/promises';
+import { join } from 'path';
+
 export default async function handler(req, res) {
-    // CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET');
     
@@ -7,18 +9,17 @@ export default async function handler(req, res) {
         return res.status(200).end();
     }
 
+    if (req.method !== 'GET') {
+        return res.status(405).json({ error: 'Method not allowed' });
+    }
+
     try {
-        // Simpan data di Vercel KV atau database lain
-        // Untuk testing, return dummy data
-        const dummyDonations = [
-            {
-                donator_name: "Test User",
-                amount: 10000,
-                timestamp: new Date().toISOString()
-            }
-        ];
+        const STORAGE_PATH = join(process.cwd(), 'data', 'donations.json');
+        const data = await readFile(STORAGE_PATH, 'utf8');
+        const donations = JSON.parse(data);
         
-        res.status(200).json(dummyDonations);
+        // Return last 5 donations, newest first
+        res.status(200).json(donations.slice(-5).reverse());
     } catch (err) {
         res.status(200).json([]);
     }
