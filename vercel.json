@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "routes": [
+    {
+      "src": "/api/donations",
+      "methods": ["GET", "OPTIONS"],
+      "dest": "/api/donations.js"
+    },
+    {
+      "src": "/webhook-saweria",
+      "methods": ["POST", "OPTIONS"],
+      "dest": "/api/webhook-saweria.js"
+    }
+  ],
+  "github": {
+    "silent": true
+  }
+}
