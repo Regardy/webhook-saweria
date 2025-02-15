@@ -17,15 +17,13 @@ app.post('/webhook/saweria', (req, res) => {
     const data = req.body;
     console.log('Data dari Saweria:', data);
 
-    // Simpan data donasi ke array
     if (data.event === 'donation') {
         donations.push(data); // Tambahkan donasi ke array
-        console.log(`Donasi diterima: ${data.amount} dari ${data.donator_name}`);
+        console.log('Donasi disimpan:', donations); // Log array donations
     }
 
     res.status(200).json({ message: 'Webhook received' });
 });
-
 // Endpoint untuk mendapatkan data donasi terbaru
 app.get('/api/donations', (req, res) => {
     // Urutkan donasi berdasarkan waktu (terbaru pertama)
